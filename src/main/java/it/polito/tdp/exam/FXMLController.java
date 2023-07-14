@@ -5,9 +5,12 @@
 package it.polito.tdp.exam;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import it.polito.tdp.exam.model.Model;
+import it.polito.tdp.exam.model.Team;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -35,10 +38,10 @@ public class FXMLController {
     private Button btnSimula; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbAnno"
-    private ComboBox<?> cmbAnno; // Value injected by FXMLLoader
+    private ComboBox<Integer> cmbAnno; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbSquadra"
-    private ComboBox<?> cmbSquadra; // Value injected by FXMLLoader
+    private ComboBox<String> cmbSquadra; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -48,6 +51,26 @@ public class FXMLController {
 
     @FXML
     void handleCreaGrafo(ActionEvent event) {
+    	
+    	String squadra = cmbSquadra.getValue();
+    	
+    	if(squadra == null) {
+    		txtResult.appendText("Seleziona una squadra");
+    		return;
+    	}
+    	
+    	
+		this.model.creaGrafo(squadra);
+
+		txtResult.appendText("Grafo creato!\n");
+		txtResult.appendText(String.format("# VERTICI: %d\n", this.model.nVertici()));
+		txtResult.appendText(String.format("# ARCHI: %d\n", this.model.nArchi()));
+		
+		List<Integer> anni = new ArrayList<>();
+        for(Team t : this.model.getVertici()) {
+        	anni.add(t.getYear());
+        }
+		cmbAnno.getItems().addAll(anni);
 
     }
 
@@ -75,6 +98,7 @@ public class FXMLController {
 
     public void setModel(Model model) {
         this.model = model;
+        cmbSquadra.getItems().addAll(this.model.getSquadre());
     }
 
 }
